@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
             this.startActivity(intent);//添加this更容易理解
             this.finish();
         });
+
+        
     }
 
     private void login(String username,String password){

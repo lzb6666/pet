@@ -91,6 +91,7 @@ public class AdoptFragment extends Fragment {
                 List<Pet> pets=JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Pet>>(){}.getType());
                 getActivity().runOnUiThread(()->{
                     adapter.setPetList(pets);
+                    adapter.setType("adopt");
                 });
             }
         });

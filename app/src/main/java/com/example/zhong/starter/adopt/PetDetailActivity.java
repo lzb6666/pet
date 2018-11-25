@@ -1,9 +1,11 @@
 package com.example.zhong.starter.adopt;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import com.example.zhong.starter.account.LoginActivity;
 import com.example.zhong.starter.data.LogInfo;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
+import com.example.zhong.starter.util.TitleBar;
 import com.example.zhong.starter.util.result.CodeResult;
 import com.example.zhong.starter.vo.Pet;
 
@@ -45,6 +48,7 @@ public class PetDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pet_detail);
+        toolbar();
 
         nameTxtView=findViewById(R.id.textView_name_detail_pet);
         detailTxtView=findViewById(R.id.textView_description_detail_pet);
@@ -59,10 +63,8 @@ public class PetDetailActivity extends AppCompatActivity {
         Intent intent=getIntent();
         petID=intent.getStringExtra("petID");
         if (intent.getStringExtra("from").equals("record")){
-            adoptBtn.setText("确定");
-            adoptBtn.setOnClickListener(v->{
-                this.finish();
-            });
+            adoptBtn.setVisibility(View.INVISIBLE);
+
         }else{
             adoptBtn.setOnClickListener(v->{
                 adopt(LogInfo.getUser(PetDetailActivity.this).getUserID(),petID);
@@ -132,5 +134,23 @@ public class PetDetailActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void toolbar(){
+        TitleBar titleBar = (TitleBar) findViewById(R.id.toolbar);
+
+        titleBar.setLeftImageResource(R.drawable.ic_left_black_24dp);
+        titleBar.setLeftText("返回");
+        titleBar.setLeftTextColor(Color.BLACK);
+        titleBar.setLeftClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        titleBar.setTitle("宠物详情");
+        titleBar.setTitleColor(Color.BLACK);
+
     }
 }

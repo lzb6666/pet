@@ -24,6 +24,7 @@ import java.util.List;
 public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.ViewHolder> {
     private List<Pet> petList;
     private Context context;
+    private String type;
     private static final String TAG="AdoptListAdapter";
 
     public AdoptListAdapter(List<Pet> petList) {
@@ -42,6 +43,10 @@ public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.View
     public void setPetList(List<Pet> petList) {
         this.petList = petList;
         this.notifyDataSetChanged();
+    }
+
+    public void setType(String type){
+        this.type = type;
     }
 
     @NonNull
@@ -67,7 +72,7 @@ public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.View
             Intent intentToPetDetail = new Intent(context, PetDetailActivity.class);
             Log.d(TAG, "onCreateViewHolder: "+petList.get(i).getImgURL());
             intentToPetDetail.putExtra("petID",petList.get(i).getPetID());
-            intentToPetDetail.putExtra("from","adopt");
+            intentToPetDetail.putExtra("from",type);
 
             context.startActivity(intentToPetDetail);
         });
@@ -83,7 +88,8 @@ public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.View
         TextView petName;
         TextView variety;
         View petView;
-        public ViewHolder(@NonNull View itemView) {
+
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             petView=itemView;
             petImage=itemView.findViewById(R.id.imgView_petList_img);

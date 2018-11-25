@@ -1,9 +1,11 @@
 package com.example.zhong.starter.main;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.zhong.starter.R;
@@ -13,6 +15,7 @@ import com.example.zhong.starter.data.LogInfo;
 import com.example.zhong.starter.main.adapter.RecordAdapter;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
+import com.example.zhong.starter.util.TitleBar;
 import com.example.zhong.starter.vo.AdoptRecord;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,6 +35,8 @@ public class AdoptRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adopt_record);
 
+        toolbar();
+
         RecyclerView recyclerView=findViewById(R.id.rylView_all_adopt);
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -39,6 +44,24 @@ public class AdoptRecordActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         loadData();
+
+    }
+
+    private void toolbar(){
+        TitleBar titleBar = (TitleBar) findViewById(R.id.toolbar);
+
+        titleBar.setLeftImageResource(R.drawable.ic_left_black_24dp);
+        titleBar.setLeftText("返回");
+        titleBar.setLeftTextColor(Color.BLACK);
+        titleBar.setLeftClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        titleBar.setTitle("领养记录");
+        titleBar.setTitleColor(Color.BLACK);
 
     }
 
