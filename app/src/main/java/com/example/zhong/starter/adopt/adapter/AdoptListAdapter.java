@@ -47,6 +47,7 @@ public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+
         View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_pet,viewGroup,false);
         final ViewHolder viewHolder=new ViewHolder(view);
         return new ViewHolder(view);
@@ -66,6 +67,8 @@ public class AdoptListAdapter extends RecyclerView.Adapter<AdoptListAdapter.View
             Intent intentToPetDetail = new Intent(context, PetDetailActivity.class);
             Log.d(TAG, "onCreateViewHolder: "+petList.get(i).getImgURL());
             intentToPetDetail.putExtra("petID",petList.get(i).getPetID());
+            intentToPetDetail.putExtra("from","adopt");
+
             context.startActivity(intentToPetDetail);
         });
     }

@@ -43,7 +43,7 @@ public class AdoptRecordActivity extends AppCompatActivity {
     }
 
     private void loadData(){
-        HttpUtil.sendGet("/adopt/records?userID=" + LogInfo.getUser().getUserID(), new Callback() {
+        HttpUtil.sendGet("/adopt/records?userID=" + LogInfo.getUser(AdoptRecordActivity.this).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(()->{

@@ -65,7 +65,7 @@ public class PetDetailActivity extends AppCompatActivity {
             });
         }else{
             adoptBtn.setOnClickListener(v->{
-                adopt(LogInfo.getUser().getUserID(),petID);
+                adopt(LogInfo.getUser(PetDetailActivity.this).getUserID(),petID);
             });
         }
         getPet(petID);

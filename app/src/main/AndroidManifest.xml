@@ -30,7 +30,8 @@
         <activity android:name=".main.MainActivity" />
         <activity android:name=".main.AdoptRecordActivity" />
         <activity android:name=".adopt.PetDetailActivity" />
-        <activity android:name=".main.RecordDetailActivity"></activity>
+        <activity android:name=".main.RecordDetailActivity" />
+        <activity android:name=".adopt.ReleaseTaskActivity"></activity>
     </application>
 
 </manifest>

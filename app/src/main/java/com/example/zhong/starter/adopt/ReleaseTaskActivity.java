@@ -1,22 +1,15 @@
 package com.example.zhong.starter.adopt;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,33 +19,25 @@ import android.widget.Toast;
 
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.data.LogInfo;
-import com.example.zhong.starter.main.MainActivity;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.ImgUtil;
 import com.example.zhong.starter.util.JsonUtil;
+import com.example.zhong.starter.util.TitleBar;
 import com.example.zhong.starter.util.result.CodeResult;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static android.app.Activity.RESULT_OK;
+public class ReleaseTaskActivity extends AppCompatActivity {
 
-public class FosterFragment extends Fragment {
     private static final String TAG ="FosterFragment" ;
-    private View view;
     private EditText nameEditTxt;
     private EditText detailEditTxt;
     private RadioGroup sexRg;
@@ -62,54 +47,90 @@ public class FosterFragment extends Fragment {
     private EditText varietyTxt;
     private ImageView petImgView;
     private Bitmap bitmap;
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_foster, null);
+    private Button submitBtn;
 
-        nameEditTxt=view.findViewById(R.id.edtTxt_pet_name);
-        detailEditTxt=view.findViewById(R.id.edtTxt_pet_detail);
-        petImgView=view.findViewById(R.id.imgView_pet_img);
-        sexRg=view.findViewById(R.id.rg_sex);
-        ageTxt=view.findViewById(R.id.edtTxt_pet_age);
-        healthTxt=view.findViewById(R.id.edtTxt_pet_health);
-        otherTxt=view.findViewById(R.id.edtTxt_pet_other);
-        varietyTxt=view.findViewById(R.id.edtTxt_pet_variety);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_release_task);
+        toolbar();
+        initView();
         petImgView.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 1);
         });
 
-        Button submitBtn=view.findViewById(R.id.btn_pet_submit);
+        //RadioButton radioButton = findViewById(sexRg.getCheckedRadioButtonId());
+        final String[] result = new String[1];
+        sexRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // 获取选中的RadioButton的id
+                int id = group.getCheckedRadioButtonId();
+                // 通过id实例化选中的这个RadioButton
+                RadioButton radioButton = (RadioButton) findViewById(id);
+                // 获取这个RadioButton的text内容
+                result[0] = radioButton.getText().toString();
+
+                Toast.makeText(ReleaseTaskActivity.this, "你的性别为：" + result[0], Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
         submitBtn.setOnClickListener(v->{
             String name=nameEditTxt.getText().toString();
             String detail=detailEditTxt.getText().toString();
             if (name.length()==0){
-                Toast.makeText(this.getContext(),"请填写宠物的名字",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReleaseTaskActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
             }
-            if (detail.length()==0){
-                Toast.makeText(this.getContext(),"请填写宠物的描述",Toast.LENGTH_SHORT).show();
-            }
+
             if (bitmap==null){
-                Toast.makeText(this.getContext(),"请选择宠物图片",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReleaseTaskActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
             }
-            RadioButton radioButton=view.findViewById(sexRg.getCheckedRadioButtonId());
-            String sex=radioButton.getText().toString();
+
+
+            String sex = result[0];
             String age=ageTxt.getText().toString();
             String health=healthTxt.getText().toString();
             String other=otherTxt.getText().toString();
             String variety=varietyTxt.getText().toString();
-            this.upload(name,detail,sex,age,health,other,variety);
+            this.upload(name, detail, sex, age, health, other, variety);
         });
-        return view;
+
     }
 
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
+    private void initView(){
+        nameEditTxt = findViewById(R.id.edtTxt_pet_name);
+        detailEditTxt = findViewById(R.id.edtTxt_pet_detail);
+        petImgView = findViewById(R.id.imgView_pet_img);
+        sexRg = findViewById(R.id.rg_sex);
+        ageTxt = findViewById(R.id.edtTxt_pet_age);
+        healthTxt = findViewById(R.id.edtTxt_pet_health);
+        otherTxt = findViewById(R.id.edtTxt_pet_other);
+        varietyTxt = findViewById(R.id.edtTxt_pet_variety);
+        submitBtn = findViewById(R.id.btn_pet_submit);
     }
 
+    private void toolbar(){
+        TitleBar titleBar = (TitleBar) findViewById(R.id.toolbar);
+
+        titleBar.setLeftImageResource(R.drawable.ic_left_black_24dp);
+        titleBar.setLeftText("返回");
+        titleBar.setLeftTextColor(Color.BLACK);
+        titleBar.setLeftClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        titleBar.setTitle("发布领养");
+        titleBar.setTitleColor(Color.BLACK);
+
+    }
 
     @Override
     public void onActivityResult(int requsetCode,int resultCode,Intent data){
@@ -145,7 +166,7 @@ public class FosterFragment extends Fragment {
     }
 
     private void upload(String name,String detail,String sex,String age,String health,String other,String variety){
-        File file=ImgUtil.compressImage(bitmap);
+        File file= ImgUtil.compressImage(bitmap);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("petImg","pet.png",RequestBody.create(MediaType.parse("image/jpg"), file))
@@ -156,36 +177,33 @@ public class FosterFragment extends Fragment {
                 .addFormDataPart("age",age)
                 .addFormDataPart("health",health)
                 .addFormDataPart("other",other)
-                .addFormDataPart("userID",LogInfo.getUser(getContext()).getUserID())
+                .addFormDataPart("userID", LogInfo.getUser(ReleaseTaskActivity.this).getUserID())
                 .build();
         HttpUtil.sendPost("/pet/upload", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(()->{
-                    Toast.makeText(getActivity().getApplicationContext(),"宠物上传失败",Toast.LENGTH_SHORT).show();
+                ReleaseTaskActivity.this.runOnUiThread(()->{
+                    Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),"宠物上传失败",Toast.LENGTH_SHORT).show();
                 });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
+                CodeResult codeResult= JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 if (codeResult.getRstCode()==200){
-                    getActivity().runOnUiThread(()->{
-                        Toast.makeText(getActivity().getApplicationContext(),"宠物上传成功",Toast.LENGTH_SHORT).show();
-                        //TODO:跳转至list
-                        Intent intent=new Intent("com.pet.broadcast.TO_ADOPT");
-                        LocalBroadcastManager.getInstance(FosterFragment.this.getContext()).sendBroadcast(intent);
+                    ReleaseTaskActivity.this.runOnUiThread(()->{
+                        Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),"宠物上传成功",Toast.LENGTH_SHORT).show();
+                        finish();
                     });
                 }
                 if (codeResult.getRstCode()==400){
-                    getActivity().runOnUiThread(()->{
-                        Toast.makeText(getActivity().getApplicationContext(),codeResult.getMsg(),Toast.LENGTH_SHORT).show();
+                    ReleaseTaskActivity.this.runOnUiThread(()->{
+                        Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),codeResult.getMsg(),Toast.LENGTH_SHORT).show();
                     });
                 }
 
             }
         });
     }
-
 }

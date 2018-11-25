@@ -77,7 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                     LoginActivity.this.runOnUiThread(()->{
                         Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
                     });
-                    LogInfo.setUser(user);
+
+                    LogInfo.setUser(LoginActivity.this,user);
                     Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                     LoginActivity.this.startActivity(intent);
                     finish();

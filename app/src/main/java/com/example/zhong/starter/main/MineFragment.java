@@ -56,18 +56,18 @@ public class MineFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, null);
         //accountInfoLayout = (RelativeLayout)view.findViewById(R.id.linearlayout_account_info_account);
         TextView accountTextView = view.findViewById(R.id.textview_account);
-        accountTextView.setText(LogInfo.getUser().getUsername());
+        accountTextView.setText(LogInfo.getUser(getContext()).getUsername());
         TextView citiAccountTextView = view.findViewById(R.id.textview_account_position);
         headImg = view.findViewById(R.id.headImg_account);
         Glide.with(view.getContext())
-                .load(LogInfo.getUser().getHeadImgURL())
+                .load(LogInfo.getUser(getContext()).getHeadImgURL())
                 .placeholder(R.drawable.portrait_1)
                 .error(R.drawable.portrait_1)
                 .into(headImg);
 
         Button logoutBtn=view.findViewById(R.id.btn_logout_account);
         logoutBtn.setOnClickListener(v->{
-            LogInfo.setUser(null);
+            LogInfo.setUser(getContext(),null);
             Intent intent=new Intent(view.getContext(),LoginActivity.class);
             startActivity(intent);
         });
@@ -137,7 +137,7 @@ public class MineFragment extends Fragment {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("headImg", "head.png", RequestBody.create(MediaType.parse("image/jpg"), file))
-                .addFormDataPart("userID",LogInfo.getUser().getUserID())
+                .addFormDataPart("userID",LogInfo.getUser(getContext()).getUserID())
                 .build();
         HttpUtil.sendPost("/account/uploadHeadImg", requestBody, new Callback() {
             @Override
