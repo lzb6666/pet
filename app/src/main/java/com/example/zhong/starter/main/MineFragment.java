@@ -78,8 +78,8 @@ public class MineFragment extends Fragment {
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 1);
         });
-        ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("领养记录", "我的订单", "设置"));
-        ArrayList<Integer> menuIcon = new ArrayList<Integer>(Arrays.asList(R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp));
+        ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("个人信息", "领养记录", "寄养记录","设置"));
+        ArrayList<Integer> menuIcon = new ArrayList<Integer>(Arrays.asList(R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp));
         ListView mineListView = view.findViewById(R.id.listView_menu_account);
         MineAdapter mineAdapter = new MineAdapter(menuItem, menuIcon, getContext());
         mineListView.setAdapter(mineAdapter);
@@ -89,9 +89,20 @@ public class MineFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent intentToRecord = new Intent(getContext(), AdoptRecordActivity.class);
-                        startActivity(intentToRecord);
+                        Intent intentToInfo = new Intent(getContext(), AdoptRecordActivity.class);
+                        startActivity(intentToInfo);
                         break;
+                    case 1:
+                        Intent intentToAdoptRecord = new Intent(getContext(), AdoptRecordActivity.class);
+                        startActivity(intentToAdoptRecord);
+                        break;
+                    case 2:
+                        Intent intentToFosterRecord = new Intent(getContext(), AdoptRecordActivity.class);
+                        startActivity(intentToFosterRecord);
+                        break;
+                    case 3:
+                        Intent intentToSetting = new Intent(getContext(), SettingActivity.class);
+                        startActivity(intentToSetting);
                 }
             }
         });

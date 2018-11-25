@@ -37,4 +37,6 @@ dependencies {
     implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
+    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+
 }
