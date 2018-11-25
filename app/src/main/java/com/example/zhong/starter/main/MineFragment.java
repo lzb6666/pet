@@ -68,6 +68,7 @@ public class MineFragment extends Fragment {
         Button logoutBtn=view.findViewById(R.id.btn_logout_account);
         logoutBtn.setOnClickListener(v->{
             LogInfo.setUser(getContext(),null);
+            LogInfo.getInstance(getContext()).logout();
             Intent intent=new Intent(view.getContext(),LoginActivity.class);
             startActivity(intent);
         });

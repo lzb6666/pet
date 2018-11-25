@@ -55,7 +55,12 @@ public class LoginActivity extends AppCompatActivity {
             this.finish();
         });
 
-        
+        if(LogInfo.getInstance(LoginActivity.this).isLogin()){
+            Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+            LoginActivity.this.startActivity(intent);
+            this.finish();
+        }
+
     }
 
     private void login(String username,String password){
@@ -77,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user!=null){
                     Log.d(TAG, "onResponse: "+user.getUserID());
                     LoginActivity.this.runOnUiThread(()->{
+                        LogInfo.getInstance(LoginActivity.this).login();
                         Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
                     });
 
