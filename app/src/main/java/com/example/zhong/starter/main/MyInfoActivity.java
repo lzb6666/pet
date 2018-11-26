@@ -101,7 +101,6 @@ public class MyInfoActivity extends AppCompatActivity {
             public void onItemClick(int position) {
 
                 Intent intent = new Intent(MyInfoActivity.this,ModifyInfoActivity.class);
-                Toast.makeText(MyInfoActivity.this, ""+position, Toast.LENGTH_SHORT).show();
                 Bundle bundle = new Bundle();
                 bundle.putInt("position",position);
                 bundle.putString("title", mAdapter.getTitles().get(position));

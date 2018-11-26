@@ -43,6 +43,13 @@
             android:text="女"
             android:textSize="20dp"
             />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="保密"
+            android:textSize="20dp"
+            />
     </RadioGroup>
 
 </LinearLayout>
