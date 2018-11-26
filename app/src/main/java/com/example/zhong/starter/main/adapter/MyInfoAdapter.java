@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.main.RecordDetailActivity;
 import com.example.zhong.starter.vo.AdoptRecord;
+import com.example.zhong.starter.vo.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,19 @@ import java.util.List;
 public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder> {
 
     private List<String> titles;
+
     private List<String> contents;
     private Context context;
 
     private OnItemClickListener mItemClickListener;
+
+    public List<String> getTitles() {
+        return titles;
+    }
+
+    public List<String> getContents() {
+        return contents;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView title;
@@ -45,8 +55,15 @@ public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder
         this.context = context;
     }
 
-    public void setContents(List<String> contents){
-        this.contents = contents;
+    public void setContents(User user){
+        contents.clear();
+        contents.add(user.getSex());
+        contents.add(user.getAge());
+        contents.add(user.getCareer());
+        contents.add(user.getCity());
+        contents.add(user.getPetExperience());
+        contents.add(user.getPreference());
+
         this.notifyDataSetChanged();
     }
 
@@ -82,9 +99,13 @@ public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyInfoAdapter.ViewHolder viewHolder, int i) {
-        String record = contents.get(i);
+        String content = contents.get(i);
+        if(content==null){
+            content = "暂无信息";
+        }
         viewHolder.title.setText(titles.get(i));
-        viewHolder.content.setText(record);
+
+        viewHolder.content.setText(content);
         viewHolder.itemView.setTag(i);
 
     }

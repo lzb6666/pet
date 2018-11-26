@@ -33,7 +33,8 @@
         <activity android:name=".main.RecordDetailActivity" />
         <activity android:name=".main.SettingActivity" />
         <activity android:name=".adopt.ReleaseTaskActivity" />
-        <activity android:name=".main.MyInfoActivity"></activity>
+        <activity android:name=".main.MyInfoActivity" />
+        <activity android:name=".main.ModifyInfoActivity"></activity>
     </application>
 
 </manifest>

@@ -13,11 +13,13 @@ import android.widget.Toast;
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.adopt.ReleaseTaskActivity;
 import com.example.zhong.starter.base.MyListView;
+import com.example.zhong.starter.data.LogInfo;
 import com.example.zhong.starter.main.adapter.MyInfoAdapter;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
 import com.example.zhong.starter.util.TitleBar;
 import com.example.zhong.starter.vo.Pet;
+import com.example.zhong.starter.vo.User;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -41,11 +43,19 @@ public class MyInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_info);
 
         toolBar();
+
         initView();
 
         setRecyclerView();
 
         loadListData();
+
+    }
+
+    private void refresh() {
+        finish();
+        Intent intent = new Intent(MyInfoActivity.this, MyInfoActivity.class);
+        startActivity(intent);
     }
 
     public void toolBar(){
@@ -89,7 +99,18 @@ public class MyInfoActivity extends AppCompatActivity {
         mAdapter.setItemClickListener(new MyInfoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+
+                Intent intent = new Intent(MyInfoActivity.this,ModifyInfoActivity.class);
                 Toast.makeText(MyInfoActivity.this, ""+position, Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putInt("position",position);
+                bundle.putString("title", mAdapter.getTitles().get(position));
+                bundle.putString("content", mAdapter.getContents().get(position));
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+
             }
         });
 
@@ -99,7 +120,10 @@ public class MyInfoActivity extends AppCompatActivity {
     }
 
     private void loadListData(){
-        HttpUtil.sendGet("/pet/pets?start=0&end=20", new Callback() {
+        ArrayList<String> titles = new ArrayList<String>(Arrays.asList("性别", "年龄","职业","所在城市", "养宠经历","宠物偏好"));
+
+
+        HttpUtil.sendGet("/account/info?userID=" + LogInfo.getUser(MyInfoActivity.this).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 MyInfoActivity.this.runOnUiThread(()->{
@@ -109,13 +133,23 @@ public class MyInfoActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                List<Pet> pets= JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Pet>>(){}.getType());
-                ArrayList<String> titles = new ArrayList<String>(Arrays.asList("性别", "年龄","职业"));
+                User user_return = JsonUtil.gson.fromJson(response.body().string(),new TypeToken<User>(){}.getType());
+                LogInfo.setUser(MyInfoActivity.this,user_return);
                 MyInfoActivity.this.runOnUiThread(()->{
+
                     mAdapter.setTitles(titles);
-                    mAdapter.setContents(titles);
+                    mAdapter.setContents(user_return);
+                    account.setText(user_return.getUsername());
+
                 });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadListData();
+        mAdapter.notifyDataSetChanged();//刷新这个adapter
     }
 }
