@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.account.LoginActivity;
+import com.example.zhong.starter.base.MyListView;
 import com.example.zhong.starter.data.LogInfo;
 import com.example.zhong.starter.main.adapter.MineAdapter;
 import com.example.zhong.starter.util.HttpUtil;
@@ -80,8 +82,9 @@ public class MineFragment extends Fragment {
         });
         ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("个人信息", "领养记录", "寄养记录","设置"));
         ArrayList<Integer> menuIcon = new ArrayList<Integer>(Arrays.asList(R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp, R.drawable.ic_reorder_black_24dp));
-        ListView mineListView = view.findViewById(R.id.listView_menu_account);
+        MyListView mineListView = view.findViewById(R.id.listView_menu_account);
         MineAdapter mineAdapter = new MineAdapter(menuItem, menuIcon, getContext());
+        setListViewHeightBasedOnChildren(mineListView);
         mineListView.setAdapter(mineAdapter);
 
         mineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,7 +92,7 @@ public class MineFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent intentToInfo = new Intent(getContext(), AdoptRecordActivity.class);
+                        Intent intentToInfo = new Intent(getContext(), MyInfoActivity.class);
                         startActivity(intentToInfo);
                         break;
                     case 1:
@@ -176,5 +179,42 @@ public class MineFragment extends Fragment {
 
             }
         });
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+
+        // 获取ListView对应的Adapter
+
+        ListAdapter listAdapter = listView.getAdapter();
+
+        if (listAdapter == null) {
+
+            return;
+
+        }
+
+        int totalHeight = 0;
+
+        for (int i = 0; i < listAdapter.getCount(); i++) { // listAdapter.getCount()返回数据项的数目
+
+            View listItem = listAdapter.getView(i, null, listView);
+
+            listItem.measure(0, 0); // 计算子项View 的宽高
+
+            totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
+
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+
+        // listView.getDividerHeight()获取子项间分隔符占用的高度
+
+        // params.height最后得到整个ListView完整显示需要的高度
+
+        listView.setLayoutParams(params);
+
     }
 }
