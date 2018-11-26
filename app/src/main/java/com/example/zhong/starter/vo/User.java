@@ -1,5 +1,6 @@
 package com.example.zhong.starter.vo;
 
+
 import java.util.UUID;
 
 public class User {
@@ -7,6 +8,75 @@ public class User {
     private String username;
     private String phoneNum;
     private String headImgURL;
+    private String sex;
+    private String age;
+    private String career;
+    private String city;
+    private String petExperience;
+    private String preference;
+
+    public User() {
+    }
+
+    public User(String userID, String username, String headImgURL, String sex, String age, String career, String city, String petExperience, String preference) {
+        this.userID = userID;
+        this.username = username;
+        this.headImgURL = headImgURL;
+        this.sex = sex;
+        this.age = age;
+        this.career = career;
+        this.city = city;
+        this.petExperience = petExperience;
+        this.preference = preference;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPetExperience() {
+        return petExperience;
+    }
+
+    public void setPetExperience(String petExperience) {
+        this.petExperience = petExperience;
+    }
+
+    public String getPreference() {
+        return preference;
+    }
+
+    public void setPreference(String preference) {
+        this.preference = preference;
+    }
 
     public User(String phoneNum) {
         this.userID= UUID.randomUUID().toString();
