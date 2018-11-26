@@ -2,27 +2,19 @@ package com.example.zhong.starter.adopt;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zhong.starter.R;
-import com.example.zhong.starter.account.LoginActivity;
 import com.example.zhong.starter.adopt.adapter.AdoptListAdapter;
-import com.example.zhong.starter.main.AdoptRecordActivity;
-import com.example.zhong.starter.main.MainActivity;
-import com.example.zhong.starter.main.adapter.MineAdapter;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
 import com.example.zhong.starter.util.TitleBar;
@@ -30,14 +22,10 @@ import com.example.zhong.starter.vo.Pet;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AdoptFragment extends Fragment {
@@ -95,5 +83,12 @@ public class AdoptFragment extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadListData();
+
     }
 }

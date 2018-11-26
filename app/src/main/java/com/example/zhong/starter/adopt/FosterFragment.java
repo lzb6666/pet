@@ -14,11 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.zhong.starter.R;
-import com.example.zhong.starter.adopt.adapter.AdoptListAdapter;
+import com.example.zhong.starter.adopt.adapter.FosterListAdapter;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
 import com.example.zhong.starter.util.TitleBar;
-import com.example.zhong.starter.vo.Pet;
+import com.example.zhong.starter.vo.Nurse;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ import okhttp3.Response;
 
 public class FosterFragment extends Fragment {
     private View view;
-    private AdoptListAdapter adapter;
+    private FosterListAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class FosterFragment extends Fragment {
         RecyclerView recyclerView=view.findViewById(R.id.rylView_foster_petList);
         LinearLayoutManager layoutManager=new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter=new AdoptListAdapter(this.getContext());
+        adapter = new FosterListAdapter(this.getContext());
         recyclerView.setAdapter(adapter);
 
         loadListData();
@@ -56,7 +56,7 @@ public class FosterFragment extends Fragment {
             @Override
             public void performAction(View view) {
                 //跳转到发布页面
-                Intent intent = new Intent(getActivity(), ReleaseTaskActivity.class);
+                Intent intent = new Intent(getActivity(), ReleaseNurseActivity.class);
                 startActivity(intent);
 
             }
@@ -65,7 +65,7 @@ public class FosterFragment extends Fragment {
         titleBar.setTitleColor(Color.BLACK);
     }
     private void loadListData(){
-        HttpUtil.sendGet("/pet/pets", new Callback() {
+        HttpUtil.sendGet("/nurse/all", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(()->{
@@ -75,13 +75,20 @@ public class FosterFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                List<Pet> pets=JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Pet>>(){}.getType());
+                List<Nurse> pets=JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Nurse>>(){}.getType());
                 getActivity().runOnUiThread(()->{
-                    adapter.setPetList(pets);
+                    adapter.setNurseList(pets);
                     adapter.setType("foster");
                 });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadListData();
+
     }
 
 }

@@ -34,7 +34,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ReleaseTaskActivity extends AppCompatActivity {
+public class ReleaseNurseActivity extends AppCompatActivity {
 
     private static final String TAG ="FosterFragment" ;
     private EditText nameEditTxt;
@@ -51,7 +51,7 @@ public class ReleaseTaskActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_release_task);
+        setContentView(R.layout.activity_release_nurse);
         toolbar();
         initView();
         petImgView.setOnClickListener(v -> {
@@ -73,7 +73,7 @@ public class ReleaseTaskActivity extends AppCompatActivity {
                 // 获取这个RadioButton的text内容
                 result[0] = radioButton.getText().toString();
 
-                Toast.makeText(ReleaseTaskActivity.this, "你的性别为：" + result[0], Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReleaseNurseActivity.this, "你的性别为：" + result[0], Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -84,12 +84,12 @@ public class ReleaseTaskActivity extends AppCompatActivity {
             String name=nameEditTxt.getText().toString();
             String detail=detailEditTxt.getText().toString();
             if (name.length()==0){
-                Toast.makeText(ReleaseTaskActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReleaseNurseActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (bitmap==null){
-                Toast.makeText(ReleaseTaskActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReleaseNurseActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -129,7 +129,7 @@ public class ReleaseTaskActivity extends AppCompatActivity {
             }
         });
 
-        titleBar.setTitle("发布领养");
+        titleBar.setTitle("发布寄养");
         titleBar.setTitleColor(Color.BLACK);
 
     }
@@ -171,21 +171,22 @@ public class ReleaseTaskActivity extends AppCompatActivity {
         File file= ImgUtil.compressImage(bitmap);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("petImg","pet.png",RequestBody.create(MediaType.parse("image/jpg"), file))
+                .addFormDataPart("petImg","pet.png", RequestBody.create(MediaType.parse("image/jpg"), file))
                 .addFormDataPart("name",name)
-                .addFormDataPart("detail",detail)
+                .addFormDataPart("note",detail)
                 .addFormDataPart("variety",variety)
                 .addFormDataPart("sex",sex)
                 .addFormDataPart("age",age)
                 .addFormDataPart("health",health)
                 .addFormDataPart("other",other)
-                .addFormDataPart("userID", LogInfo.getUser(ReleaseTaskActivity.this).getUserID())
+                .addFormDataPart("announcer", LogInfo.getUser(ReleaseNurseActivity.this).getUserID())
+                .addFormDataPart("status", "available")
                 .build();
-        HttpUtil.sendPost("/pet/upload", requestBody, new Callback() {
+        HttpUtil.sendPost("/nurse/add", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                ReleaseTaskActivity.this.runOnUiThread(()->{
-                    Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),"宠物上传失败",Toast.LENGTH_SHORT).show();
+                ReleaseNurseActivity.this.runOnUiThread(()->{
+                    Toast.makeText(ReleaseNurseActivity.this.getApplicationContext(),"寄养任务上传失败",Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -194,14 +195,14 @@ public class ReleaseTaskActivity extends AppCompatActivity {
                 CodeResult codeResult= JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 if (codeResult.getRstCode()==200){
-                    ReleaseTaskActivity.this.runOnUiThread(()->{
-                        Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),"宠物上传成功",Toast.LENGTH_SHORT).show();
+                    ReleaseNurseActivity.this.runOnUiThread(()->{
+                        Toast.makeText(ReleaseNurseActivity.this.getApplicationContext(),"寄养任务上传成功",Toast.LENGTH_SHORT).show();
                         finish();
                     });
                 }
                 if (codeResult.getRstCode()==400){
-                    ReleaseTaskActivity.this.runOnUiThread(()->{
-                        Toast.makeText(ReleaseTaskActivity.this.getApplicationContext(),codeResult.getMsg(),Toast.LENGTH_SHORT).show();
+                    ReleaseNurseActivity.this.runOnUiThread(()->{
+                        Toast.makeText(ReleaseNurseActivity.this.getApplicationContext(),codeResult.getMsg(),Toast.LENGTH_SHORT).show();
                     });
                 }
 

@@ -39,7 +39,11 @@
         <activity android:name=".main.PetInfoActivity" />
         <activity android:name=".main.AddPetActivity" />
         <activity android:name=".main.MyPetDetailActivity" />
-        <activity android:name=".main.ModifyPetActivity"></activity>
+        <activity android:name=".main.ModifyPetActivity" />
+        <activity android:name=".adopt.NurseDetailActivity" />
+        <activity android:name=".adopt.ReleaseNurseActivity" />
+        <activity android:name=".main.NurseRecord_ReceiveActivity" />
+        <activity android:name=".main.NurseRecord_SendActivity"></activity>
     </application>
 
 </manifest>
