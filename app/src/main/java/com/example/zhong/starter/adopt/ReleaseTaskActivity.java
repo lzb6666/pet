@@ -85,10 +85,12 @@ public class ReleaseTaskActivity extends AppCompatActivity {
             String detail=detailEditTxt.getText().toString();
             if (name.length()==0){
                 Toast.makeText(ReleaseTaskActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
+                return;
             }
 
             if (bitmap==null){
                 Toast.makeText(ReleaseTaskActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
+                return;
             }
 
 

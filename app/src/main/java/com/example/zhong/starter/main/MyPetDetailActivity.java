@@ -132,4 +132,11 @@ public class MyPetDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPet(petID);
+
+    }
+
 }

@@ -85,10 +85,12 @@ public class AddPetActivity extends AppCompatActivity {
             String detail=detailEditTxt.getText().toString();
             if (name.length()==0){
                 Toast.makeText(AddPetActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
+                return;
             }
 
             if (bitmap==null){
                 Toast.makeText(AddPetActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
@@ -179,7 +181,7 @@ public class AddPetActivity extends AppCompatActivity {
                 .addFormDataPart("other",other)
                 .addFormDataPart("userID", LogInfo.getUser(AddPetActivity.this).getUserID())
                 .build();
-        HttpUtil.sendPost("/pet/upload", requestBody, new Callback() {
+        HttpUtil.sendPost("/pet/uploadPet", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 AddPetActivity.this.runOnUiThread(()->{

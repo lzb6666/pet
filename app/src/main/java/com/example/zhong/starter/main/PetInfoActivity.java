@@ -77,7 +77,7 @@ public class PetInfoActivity extends AppCompatActivity {
     }
 
     private void loadListData(){
-        HttpUtil.sendGet("/pet/pets", new Callback() {
+        HttpUtil.sendGet("/pet/my?userID="+LogInfo.getUser(PetInfoActivity.this).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 PetInfoActivity.this.runOnUiThread(()->{
@@ -94,5 +94,13 @@ public class PetInfoActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadListData();
+
     }
 }

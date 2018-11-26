@@ -3,6 +3,7 @@ package com.example.zhong.starter.main;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -96,12 +97,8 @@ public class ModifyPetActivity extends AppCompatActivity {
             String detail=detailEditTxt.getText().toString();
             if (name.length()==0){
                 Toast.makeText(ModifyPetActivity.this,"请填写宠物的名字",Toast.LENGTH_SHORT).show();
+                return;
             }
-
-            if (bitmap==null){
-                Toast.makeText(ModifyPetActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
-            }
-
 
             String sex = result[0];
             String age=ageTxt.getText().toString();
@@ -179,6 +176,14 @@ public class ModifyPetActivity extends AppCompatActivity {
     }
 
     private void upload(String name,String detail,String sex,String age,String health,String other,String variety){
+        if (bitmap==null){
+            petImgView.setDrawingCacheEnabled(true);
+            bitmap = Bitmap.createBitmap(petImgView.getDrawingCache());
+            petImgView.setDrawingCacheEnabled(false);
+
+
+
+        }
         File file= ImgUtil.compressImage(bitmap);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -190,9 +195,9 @@ public class ModifyPetActivity extends AppCompatActivity {
                 .addFormDataPart("age",age)
                 .addFormDataPart("health",health)
                 .addFormDataPart("other",other)
-                .addFormDataPart("userID", LogInfo.getUser(ModifyPetActivity.this).getUserID())
+                .addFormDataPart("petID", petID)
                 .build();
-        HttpUtil.sendPost("/pet/upload", requestBody, new Callback() {
+        HttpUtil.sendPost("/pet/updatePet", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 ModifyPetActivity.this.runOnUiThread(()->{
