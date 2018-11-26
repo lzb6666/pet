@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.adopt.ReleaseTaskActivity;
+import com.example.zhong.starter.base.MyListView;
 import com.example.zhong.starter.main.adapter.MyInfoAdapter;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.JsonUtil;
@@ -85,6 +86,13 @@ public class MyInfoActivity extends AppCompatActivity {
 
         rv.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MyInfoAdapter(MyInfoActivity.this);
+        mAdapter.setItemClickListener(new MyInfoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(MyInfoActivity.this, ""+position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         rv.setAdapter(mAdapter);
 

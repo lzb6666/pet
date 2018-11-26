@@ -56,7 +56,11 @@ public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder
     }
 
     public static interface OnItemClickListener {
-        void onItemClick(View view);
+        void onItemClick(int position);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -68,7 +72,7 @@ public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mItemClickListener.onItemClick(v);
+                mItemClickListener.onItemClick((Integer) v.getTag());
             }
         });
 
@@ -81,6 +85,7 @@ public class MyInfoAdapter extends RecyclerView.Adapter<MyInfoAdapter.ViewHolder
         String record = contents.get(i);
         viewHolder.title.setText(titles.get(i));
         viewHolder.content.setText(record);
+        viewHolder.itemView.setTag(i);
 
     }
 
