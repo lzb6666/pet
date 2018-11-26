@@ -17,6 +17,9 @@ public class ImgUtil {
     private static final String TAG = "ImgUtil";
 
     public static File compressImage(Bitmap bitmap) {
+        if(bitmap==null){
+            return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         int options = 100;
