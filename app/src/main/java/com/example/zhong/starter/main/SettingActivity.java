@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.zhong.starter.R;
+import com.example.zhong.starter.account.ModifyPasswordActivity;
 import com.example.zhong.starter.base.CompatStatusBarActivity;
 import com.example.zhong.starter.main.adapter.MineAdapter;
 import com.example.zhong.starter.util.DataCleanManager;
@@ -25,8 +26,8 @@ public class SettingActivity extends CompatStatusBarActivity {
 
     ListView listViewMenu;
     //ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("积分兑换记录","查看历史订单","绑定花旗账户","通用","反馈","关于"));
-    ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("字体大小","清除缓存"));
-    ArrayList<Integer> menuIcon = new ArrayList<Integer>(Arrays.asList(R.drawable.font_size,R.drawable.clear));
+    ArrayList<String> menuItem = new ArrayList<String>(Arrays.asList("字体大小","清除缓存","修改密码"));
+    ArrayList<Integer> menuIcon = new ArrayList<Integer>(Arrays.asList(R.drawable.font_size,R.drawable.clear,R.drawable.modify_password));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,11 @@ public class SettingActivity extends CompatStatusBarActivity {
                             }
                         }).setNegativeButton("取消", null).show();
                         break;
+                    case 2:
+                        Intent intentToModifyPassword = new Intent(SettingActivity.this, ModifyPasswordActivity.class);
+                        startActivity(intentToModifyPassword);
 
+                        break;
                 }
             }
         });

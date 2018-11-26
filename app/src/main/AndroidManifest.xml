@@ -34,7 +34,8 @@
         <activity android:name=".main.SettingActivity" />
         <activity android:name=".adopt.ReleaseTaskActivity" />
         <activity android:name=".main.MyInfoActivity" />
-        <activity android:name=".main.ModifyInfoActivity"></activity>
+        <activity android:name=".main.ModifyInfoActivity"/>
+        <activity android:name=".account.ModifyPasswordActivity"/>
     </application>
 
 </manifest>
