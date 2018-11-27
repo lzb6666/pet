@@ -43,6 +43,7 @@ public class PetDetailActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button adoptBtn;
     private String petID;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +65,13 @@ public class PetDetailActivity extends AppCompatActivity {
         petID=intent.getStringExtra("petID");
         if (intent.getStringExtra("from").equals("record")){
             adoptBtn.setVisibility(View.INVISIBLE);
+            url="/pet/myPet";
 
         }else{
             adoptBtn.setOnClickListener(v->{
                 adopt(LogInfo.getUser(PetDetailActivity.this).getUserID(),petID);
             });
+            url="/pet";
         }
         getPet(petID);
     }
@@ -78,7 +81,7 @@ public class PetDetailActivity extends AppCompatActivity {
         RequestBody requestBody=new FormBody.Builder()
                 .add("petID",petID)
                 .build();
-        HttpUtil.sendPost("/pet",requestBody, new Callback() {
+        HttpUtil.sendPost(url,requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 PetDetailActivity.this.runOnUiThread(()->{
