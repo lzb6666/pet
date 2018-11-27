@@ -59,7 +59,7 @@ public class AuditedTabFragment extends Fragment {
     }
 
     private void loadListData(){
-        HttpUtil.sendGet("/nurse/sendRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(), new Callback() {
+        HttpUtil.sendGet("/nurse/cmpRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(()->{

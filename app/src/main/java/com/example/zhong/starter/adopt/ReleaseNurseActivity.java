@@ -73,7 +73,7 @@ public class ReleaseNurseActivity extends AppCompatActivity {
                 // 获取这个RadioButton的text内容
                 result[0] = radioButton.getText().toString();
 
-                Toast.makeText(ReleaseNurseActivity.this, "你的性别为：" + result[0], Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ReleaseNurseActivity.this, "你的性别为：" + result[0], Toast.LENGTH_SHORT).show();
 
             }
         });

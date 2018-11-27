@@ -108,7 +108,7 @@ public class MineFragment extends Fragment {
                         startActivity(intentToFosterRecord);
                         break;
 
-                    case 5:
+                    case 4:
                         Intent intentToSetting = new Intent(getContext(), SettingActivity.class);
                         startActivity(intentToSetting);
                 }

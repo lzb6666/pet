@@ -183,9 +183,9 @@ public class NurseDetailActivity extends AppCompatActivity {
     private void refuse(String userID,String petID){
         RequestBody requestBody=new FormBody.Builder()
                 .add("nurseID",petID)
-                .add("userID",userID)
+                .add("result","no")
                 .build();
-        HttpUtil.sendPost("/nurse/apply",requestBody, new Callback() {
+        HttpUtil.sendPost("/nurse/submit",requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 NurseDetailActivity.this.runOnUiThread(()->{
@@ -200,7 +200,8 @@ public class NurseDetailActivity extends AppCompatActivity {
                 NurseDetailActivity.this.runOnUiThread(()->{
                     Toast.makeText(NurseDetailActivity.this,codeResult.getMsg(),Toast.LENGTH_SHORT).show();
                     if (codeResult.getRstCode()==200){
-                        adoptBtn.setEnabled(false);
+                        //Toast.makeText(NurseDetailActivity.this,codeResult.getMsg(),Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
             }
@@ -210,9 +211,9 @@ public class NurseDetailActivity extends AppCompatActivity {
     private void agree (String userID,String petID){
         RequestBody requestBody=new FormBody.Builder()
                 .add("nurseID",petID)
-                .add("userID",userID)
+                .add("result","ok")
                 .build();
-        HttpUtil.sendPost("/nurse/apply",requestBody, new Callback() {
+        HttpUtil.sendPost("/nurse/submit",requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 NurseDetailActivity.this.runOnUiThread(()->{
@@ -227,7 +228,7 @@ public class NurseDetailActivity extends AppCompatActivity {
                 NurseDetailActivity.this.runOnUiThread(()->{
                     Toast.makeText(NurseDetailActivity.this,codeResult.getMsg(),Toast.LENGTH_SHORT).show();
                     if (codeResult.getRstCode()==200){
-                        adoptBtn.setEnabled(false);
+                        finish();
                     }
                 });
             }

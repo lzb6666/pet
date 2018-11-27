@@ -60,7 +60,7 @@ public class UnauditedTabFragment extends Fragment {
     }
 
     private void loadListData(){
-        HttpUtil.sendGet("/nurse/sendRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(), new Callback() {
+        HttpUtil.sendGet("/nurse/avRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(()->{
