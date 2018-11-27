@@ -148,6 +148,7 @@ public class ModifyPetActivity extends AppCompatActivity {
         if (resultCode==RESULT_OK){
             switch (requsetCode){
                 case 1:
+                    Log.d(TAG, "onActivityResult 1: "+data.getType());
                     startSmallPhotoZoom(data.getData());
                     break;
                 case 2:
@@ -158,6 +159,7 @@ public class ModifyPetActivity extends AppCompatActivity {
     }
 
     public void startSmallPhotoZoom(Uri uri) {
+        Log.d(TAG, "startSmallPhotoZoom: "+uri);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
@@ -180,9 +182,6 @@ public class ModifyPetActivity extends AppCompatActivity {
             petImgView.setDrawingCacheEnabled(true);
             bitmap = Bitmap.createBitmap(petImgView.getDrawingCache());
             petImgView.setDrawingCacheEnabled(false);
-
-
-
         }
         File file= ImgUtil.compressImage(bitmap);
         RequestBody requestBody=new MultipartBody.Builder()
@@ -230,7 +229,7 @@ public class ModifyPetActivity extends AppCompatActivity {
         RequestBody requestBody=new FormBody.Builder()
                 .add("petID",petID)
                 .build();
-        HttpUtil.sendPost("/pet",requestBody, new Callback() {
+        HttpUtil.sendPost("/pet/myPet",requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 ModifyPetActivity.this.runOnUiThread(()->{
