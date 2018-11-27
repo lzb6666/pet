@@ -81,7 +81,7 @@ public class MyPetDetailActivity extends AppCompatActivity {
         RequestBody requestBody=new FormBody.Builder()
                 .add("petID",petID)
                 .build();
-        HttpUtil.sendPost("/pet",requestBody, new Callback() {
+        HttpUtil.sendPost("/pet/myPet",requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 MyPetDetailActivity.this.runOnUiThread(()->{
