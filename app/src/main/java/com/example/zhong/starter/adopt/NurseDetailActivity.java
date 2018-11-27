@@ -42,13 +42,69 @@ public class NurseDetailActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button adoptBtn;
     private String nurseID;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nurse_detail);
+
+        Intent intent=getIntent();
+
+        nurseID = intent.getStringExtra("nurseID");
+        type = intent.getStringExtra("from");
+
+        switch (type){
+            case "record":
+            case"foster_receive":
+                setContentView(R.layout.activity_nurse_detail);
+                adoptBtn=findViewById(R.id.btn_pet_adopt);
+                adoptBtn.setVisibility(View.INVISIBLE);
+                break;
+            case "foster_send_audited":
+                setContentView(R.layout.activity_nurse_detail_send);
+                TextView tv_status = findViewById(R.id.textView_status);
+                tv_status.setText("已审核");
+                tv_status.setTextColor(Color.parseColor("#75BD47"));
+                break;
+            case "foster_send_unaudited":
+                setContentView(R.layout.activity_nurse_detail_send);
+                break;
+            case "foster_send_under":
+                setContentView(R.layout.activity_nurse_detail_send_under);
+                Button adoptBtnAgree=findViewById(R.id.btn_pet_send_agree);
+                Button adoptBtnRefuse=findViewById(R.id.btn_pet_send_refuse);
+
+                adoptBtnAgree.setOnClickListener(v->{
+                    agree(LogInfo.getUser(NurseDetailActivity.this).getUserID(),nurseID);
+                });
+
+                adoptBtnRefuse.setOnClickListener(v->{
+                    refuse(LogInfo.getUser(NurseDetailActivity.this).getUserID(),nurseID);
+                });
+
+                break;
+            default:
+                setContentView(R.layout.activity_nurse_detail);
+                adoptBtn=findViewById(R.id.btn_pet_adopt);
+                adoptBtn.setOnClickListener(v->{
+                    adopt(LogInfo.getUser(NurseDetailActivity.this).getUserID(),nurseID);
+                });
+                break;
+
+        }
+
         toolbar();
 
+
+        initView();
+
+
+
+
+        getPet(nurseID);
+    }
+
+    private void initView(){
         nameTxtView=findViewById(R.id.textView_name_detail_pet);
         detailTxtView=findViewById(R.id.textView_description_detail_pet);
         imageView=findViewById(R.id.imageView_detail_pet);
@@ -58,18 +114,7 @@ public class NurseDetailActivity extends AppCompatActivity {
         healthTxtView=findViewById(R.id.TxtView_pet_health);
         noteTxtView =findViewById(R.id.TxtView_pet_other);
         //phoneNumTxt=findViewById(R.id.TxtView_pet_phoneNum);
-        adoptBtn=findViewById(R.id.btn_pet_adopt);
-        Intent intent=getIntent();
-        nurseID=intent.getStringExtra("nurseID");
-        if (intent.getStringExtra("from").equals("record")){
-            adoptBtn.setVisibility(View.INVISIBLE);
 
-        }else{
-            adoptBtn.setOnClickListener(v->{
-                adopt(LogInfo.getUser(NurseDetailActivity.this).getUserID(),nurseID);
-            });
-        }
-        getPet(nurseID);
     }
 
     private void getPet(String petID){
@@ -135,6 +180,60 @@ public class NurseDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void refuse(String userID,String petID){
+        RequestBody requestBody=new FormBody.Builder()
+                .add("nurseID",petID)
+                .add("userID",userID)
+                .build();
+        HttpUtil.sendPost("/nurse/apply",requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                NurseDetailActivity.this.runOnUiThread(()->{
+                    Toast.makeText(NurseDetailActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
+                Log.d(TAG, "onResponse: "+codeResult.getMsg());
+                NurseDetailActivity.this.runOnUiThread(()->{
+                    Toast.makeText(NurseDetailActivity.this,codeResult.getMsg(),Toast.LENGTH_SHORT).show();
+                    if (codeResult.getRstCode()==200){
+                        adoptBtn.setEnabled(false);
+                    }
+                });
+            }
+        });
+    }
+
+    private void agree (String userID,String petID){
+        RequestBody requestBody=new FormBody.Builder()
+                .add("nurseID",petID)
+                .add("userID",userID)
+                .build();
+        HttpUtil.sendPost("/nurse/apply",requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                NurseDetailActivity.this.runOnUiThread(()->{
+                    Toast.makeText(NurseDetailActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
+                Log.d(TAG, "onResponse: "+codeResult.getMsg());
+                NurseDetailActivity.this.runOnUiThread(()->{
+                    Toast.makeText(NurseDetailActivity.this,codeResult.getMsg(),Toast.LENGTH_SHORT).show();
+                    if (codeResult.getRstCode()==200){
+                        adoptBtn.setEnabled(false);
+                    }
+                });
+            }
+        });
+    }
+
     private void toolbar(){
         TitleBar titleBar = (TitleBar) findViewById(R.id.toolbar);
 
@@ -148,7 +247,7 @@ public class NurseDetailActivity extends AppCompatActivity {
             }
         });
 
-        titleBar.setTitle("宠物详情");
+        titleBar.setTitle("详情");
         titleBar.setTitleColor(Color.BLACK);
 
     }
