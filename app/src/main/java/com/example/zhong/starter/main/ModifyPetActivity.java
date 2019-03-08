@@ -21,6 +21,8 @@ import com.bumptech.glide.Glide;
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.adopt.ReleaseTaskActivity;
 import com.example.zhong.starter.data.LogInfo;
+import com.example.zhong.starter.util.CropUtil;
+import com.example.zhong.starter.util.GallaryUtil;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.ImgUtil;
 import com.example.zhong.starter.util.JsonUtil;
@@ -50,8 +52,8 @@ public class ModifyPetActivity extends AppCompatActivity {
     private EditText otherTxt;
     private EditText varietyTxt;
     private ImageView petImgView;
-    private Bitmap bitmap;
     private Button submitBtn;
+    private Uri uriTempFile;
 
     private String petID;
 
@@ -149,16 +151,18 @@ public class ModifyPetActivity extends AppCompatActivity {
             switch (requsetCode){
                 case 1:
                     Log.d(TAG, "onActivityResult 1: "+data.getType());
-                    startSmallPhotoZoom(data.getData());
+                    //startSmallPhotoZoom(data.getData());
+                    uriTempFile=CropUtil.startSmallPhotoZoom(data.getData(),this);
                     break;
                 case 2:
-                    setPicToView(data);
+                    //setPicToView(data);
+                    petImgView.setImageURI(uriTempFile);
                     break;
             }
         }
     }
 
-    public void startSmallPhotoZoom(Uri uri) {
+    /*public void startSmallPhotoZoom(Uri uri) {
         Log.d(TAG, "startSmallPhotoZoom: "+uri);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -170,20 +174,25 @@ public class ModifyPetActivity extends AppCompatActivity {
         intent.putExtra("scale", true);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 2);
-    }
-    private void setPicToView(Intent data) {
+    }*/
+/*    private void setPicToView(Intent data) {
         Bundle extras = data.getExtras();
         bitmap = extras.getParcelable("data");
         petImgView.setImageBitmap(bitmap);
-    }
+    }*/
 
     private void upload(String name,String detail,String sex,String age,String health,String other,String variety){
-        if (bitmap==null){
+        File file=null;
+        Bitmap bitmap=null;
+        if (uriTempFile==null){
             petImgView.setDrawingCacheEnabled(true);
             bitmap = Bitmap.createBitmap(petImgView.getDrawingCache());
             petImgView.setDrawingCacheEnabled(false);
+            file=ImgUtil.compressImage(bitmap);
+        }else {
+            String path=GallaryUtil.getRealPathFromUri(this, uriTempFile);
+            file=new File(path);
         }
-        File file= ImgUtil.compressImage(bitmap);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("petImg","pet.png",RequestBody.create(MediaType.parse("image/jpg"), file))

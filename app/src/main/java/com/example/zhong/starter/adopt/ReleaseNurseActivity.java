@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,11 +19,13 @@ import android.widget.Toast;
 
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.data.LogInfo;
+import com.example.zhong.starter.util.CropUtil;
+import com.example.zhong.starter.util.GallaryUtil;
 import com.example.zhong.starter.util.HttpUtil;
-import com.example.zhong.starter.util.ImgUtil;
 import com.example.zhong.starter.util.JsonUtil;
 import com.example.zhong.starter.util.TitleBar;
 import com.example.zhong.starter.util.result.CodeResult;
+import com.example.zhong.starter.util.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,8 +48,9 @@ public class ReleaseNurseActivity extends AppCompatActivity {
     private EditText otherTxt;
     private EditText varietyTxt;
     private ImageView petImgView;
-    private Bitmap bitmap;
     private Button submitBtn;
+
+    private Uri uriTempFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class ReleaseNurseActivity extends AppCompatActivity {
         toolbar();
         initView();
         petImgView.setOnClickListener(v -> {
+            if (!PermissionUtil.getPermission(this)){
+                return;
+            }
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 1);
@@ -88,7 +95,7 @@ public class ReleaseNurseActivity extends AppCompatActivity {
                 return;
             }
 
-            if (bitmap==null){
+            if (uriTempFile==null){
                 Toast.makeText(ReleaseNurseActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -140,17 +147,26 @@ public class ReleaseNurseActivity extends AppCompatActivity {
         if (resultCode==RESULT_OK){
             switch (requsetCode){
                 case 1:
-                    startSmallPhotoZoom(data.getData());
+                    uriTempFile=CropUtil.startSmallPhotoZoom(data.getData(),this);
                     break;
                 case 2:
-                    setPicToView(data);
+                    petImgView.setImageURI(uriTempFile);
                     break;
             }
         }
     }
 
-    public void startSmallPhotoZoom(Uri uri) {
+/*    public void startSmallPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
+        String path = Environment.getExternalStorageDirectory() + "/take_photo";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        uriTempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath()+"/take_photo" + "/" + System.currentTimeMillis() + ".jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriTempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true);
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1); // 裁剪框比例
@@ -160,15 +176,18 @@ public class ReleaseNurseActivity extends AppCompatActivity {
         intent.putExtra("scale", true);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 2);
-    }
-    private void setPicToView(Intent data) {
-        Bundle extras = data.getExtras();
-        bitmap = extras.getParcelable("data");
-        petImgView.setImageBitmap(bitmap);
-    }
+    }*/
+/*    private void setPicToView() {
+//        Bundle extras = data.getExtras();
+//        bitmap = extras.getParcelable("data");
+//        petImgView.setImageBitmap(bitmap);
+
+        petImgView.setImageURI(uriTempFile);
+    }*/
 
     private void upload(String name,String detail,String sex,String age,String health,String other,String variety){
-        File file= ImgUtil.compressImage(bitmap);
+        String path=GallaryUtil.getRealPathFromUri(this, uriTempFile);
+        File file=new File(path);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("petImg","pet.png", RequestBody.create(MediaType.parse("image/jpg"), file))
@@ -192,6 +211,9 @@ public class ReleaseNurseActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult= JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 if (codeResult.getRstCode()==200){

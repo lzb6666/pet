@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(LogInfo.getInstance(LoginActivity.this).isLogin()){
             Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-            LoginActivity.this.startActivity(intent);
+            this.startActivity(intent);
             this.finish();
         }
 
@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         HttpUtil.sendPost("/account/login", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
                 LoginActivity.this.runOnUiThread(()->{
                     Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
                 });
@@ -78,6 +79,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 User user=JsonUtil.gson.fromJson(response.body().string(),User.class);
                 if (user!=null){
                     Log.d(TAG, "onResponse: "+user.getUserID());

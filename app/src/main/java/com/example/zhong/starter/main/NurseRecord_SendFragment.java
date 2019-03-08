@@ -106,6 +106,7 @@ public class NurseRecord_SendFragment extends Fragment {
             //依次获取标签
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             //为每个标签设置布局
+            if (tab==null)return;
             tab.setCustomView(R.layout.tab_item);
             holder = new ViewHolder(tab.getCustomView());
             //为标签填充数据

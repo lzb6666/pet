@@ -66,9 +66,12 @@ public class AdoptFragment extends Fragment {
         titleBar.setTitleColor(Color.BLACK);
     }
     private void loadListData(){
-        HttpUtil.sendGet("/pet/pets?start=0&end=20", new Callback() {
+        HttpUtil.sendGet("/pet/pets?start=0&end=50", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity()==null){
+                    return;
+                }
                 getActivity().runOnUiThread(()->{
                     Toast.makeText(getActivity().getApplicationContext(),"加载失败",Toast.LENGTH_SHORT).show();
                 });
@@ -76,6 +79,12 @@ public class AdoptFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity()==null){
+                    return;
+                }
+                if (response.body()==null){
+                    return;
+                }
                 List<Pet> pets=JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Pet>>(){}.getType());
                 getActivity().runOnUiThread(()->{
                     adapter.setPetList(pets);

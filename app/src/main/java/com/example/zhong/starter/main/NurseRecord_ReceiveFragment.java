@@ -64,6 +64,7 @@ public class NurseRecord_ReceiveFragment extends Fragment {
         HttpUtil.sendGet("/nurse/reRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(),new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity()==null)return;
                 getActivity().runOnUiThread(()->{
                     Toast.makeText(getActivity().getApplicationContext(),"加载失败",Toast.LENGTH_SHORT).show();
                 });
@@ -71,6 +72,7 @@ public class NurseRecord_ReceiveFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity()==null)return;
                 List<Nurse> pets= JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Nurse>>(){}.getType());
                 getActivity().runOnUiThread(()->{
                     adapter.setNurseList(pets);

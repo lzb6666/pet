@@ -83,6 +83,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 toast(codeResult.getMsg(), Toast.LENGTH_LONG);
@@ -105,6 +108,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 if (codeResult.getRstCode()==200){
@@ -160,6 +166,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 if (codeResult.getRstCode()==200){

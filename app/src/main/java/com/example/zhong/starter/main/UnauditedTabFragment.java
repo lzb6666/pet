@@ -63,6 +63,9 @@ public class UnauditedTabFragment extends Fragment {
         HttpUtil.sendGet("/nurse/avRecords?userID="+ LogInfo.getUser(getActivity()).getUserID(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity()==null){
+                    return;
+                }
                 getActivity().runOnUiThread(()->{
                     Toast.makeText(getActivity().getApplicationContext(),"加载失败",Toast.LENGTH_SHORT).show();
                 });
@@ -71,7 +74,9 @@ public class UnauditedTabFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<Nurse> pets= JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Nurse>>(){}.getType());
-                System.out.println(pets);
+                if (getActivity()==null){
+                    return;
+                }
                 getActivity().runOnUiThread(()->{
                     adapter.setNurseList(pets);
                     adapter.setType("foster_send_unaudited");

@@ -68,6 +68,9 @@ public class FosterFragment extends Fragment {
         HttpUtil.sendGet("/nurse/all", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity()==null){
+                    return;
+                }
                 getActivity().runOnUiThread(()->{
                     Toast.makeText(getActivity().getApplicationContext(),"加载失败",Toast.LENGTH_SHORT).show();
                 });
@@ -75,6 +78,12 @@ public class FosterFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity()==null){
+                    return;
+                }
+                if (response.body()==null){
+                    return;
+                }
                 List<Nurse> pets=JsonUtil.gson.fromJson(response.body().string(),new TypeToken<List<Nurse>>(){}.getType());
                 getActivity().runOnUiThread(()->{
                     adapter.setNurseList(pets);

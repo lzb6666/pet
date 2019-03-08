@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.example.zhong.starter.R;
 import com.example.zhong.starter.adopt.ReleaseTaskActivity;
 import com.example.zhong.starter.data.LogInfo;
+import com.example.zhong.starter.util.CropUtil;
+import com.example.zhong.starter.util.GallaryUtil;
 import com.example.zhong.starter.util.HttpUtil;
 import com.example.zhong.starter.util.ImgUtil;
 import com.example.zhong.starter.util.JsonUtil;
@@ -46,8 +48,10 @@ public class AddPetActivity extends AppCompatActivity {
     private EditText otherTxt;
     private EditText varietyTxt;
     private ImageView petImgView;
-    private Bitmap bitmap;
+
     private Button submitBtn;
+
+    private Uri uriTempFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class AddPetActivity extends AppCompatActivity {
                 return;
             }
 
-            if (bitmap==null){
+            if (uriTempFile==null){
                 Toast.makeText(AddPetActivity.this,"请选择宠物图片",Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -140,16 +144,18 @@ public class AddPetActivity extends AppCompatActivity {
         if (resultCode==RESULT_OK){
             switch (requsetCode){
                 case 1:
-                    startSmallPhotoZoom(data.getData());
+                    //startSmallPhotoZoom(data.getData());
+                    uriTempFile=CropUtil.startSmallPhotoZoom(data.getData(),this);
                     break;
                 case 2:
-                    setPicToView(data);
+                    //setPicToView(data);
+                    petImgView.setImageURI(uriTempFile);
                     break;
             }
         }
     }
 
-    public void startSmallPhotoZoom(Uri uri) {
+/*    public void startSmallPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
@@ -160,15 +166,16 @@ public class AddPetActivity extends AppCompatActivity {
         intent.putExtra("scale", true);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 2);
-    }
-    private void setPicToView(Intent data) {
+    }*/
+/*    private void setPicToView(Intent data) {
         Bundle extras = data.getExtras();
         bitmap = extras.getParcelable("data");
         petImgView.setImageBitmap(bitmap);
-    }
+    }*/
 
     private void upload(String name,String detail,String sex,String age,String health,String other,String variety){
-        File file= ImgUtil.compressImage(bitmap);
+        String path=GallaryUtil.getRealPathFromUri(this, uriTempFile);
+        File file=new File(path);
         RequestBody requestBody=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("petImg","pet.png",RequestBody.create(MediaType.parse("image/jpg"), file))

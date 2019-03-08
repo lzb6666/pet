@@ -132,6 +132,9 @@ public class NurseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 Nurse pet= JsonUtil.gson.fromJson(response.body().string(),Nurse.class);
                 Log.d(TAG, "onResponse: "+pet.getName());
                 runOnUiThread(()->{
@@ -168,6 +171,9 @@ public class NurseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 NurseDetailActivity.this.runOnUiThread(()->{
@@ -195,6 +201,9 @@ public class NurseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 NurseDetailActivity.this.runOnUiThread(()->{
@@ -223,6 +232,9 @@ public class NurseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.body()==null){
+                    return;
+                }
                 CodeResult codeResult=JsonUtil.gson.fromJson(response.body().string(),CodeResult.class);
                 Log.d(TAG, "onResponse: "+codeResult.getMsg());
                 NurseDetailActivity.this.runOnUiThread(()->{

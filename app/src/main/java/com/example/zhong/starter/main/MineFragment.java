@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,10 +27,12 @@ import com.example.zhong.starter.account.LoginActivity;
 import com.example.zhong.starter.base.MyListView;
 import com.example.zhong.starter.data.LogInfo;
 import com.example.zhong.starter.main.adapter.MineAdapter;
+import com.example.zhong.starter.util.CropUtil;
+import com.example.zhong.starter.util.GallaryUtil;
 import com.example.zhong.starter.util.HttpUtil;
-import com.example.zhong.starter.util.ImgUtil;
 import com.example.zhong.starter.util.JsonUtil;
 import com.example.zhong.starter.util.result.CodeResult;
+import com.example.zhong.starter.util.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +51,9 @@ import static android.support.constraint.Constraints.TAG;
 
 public class MineFragment extends Fragment {
 
-    private Bitmap bitmap;
+
     private ImageView headImg;
+    private Uri uriTempFile;
 
     @Nullable
     @Override
@@ -76,6 +80,9 @@ public class MineFragment extends Fragment {
         });
 
         headImg.setOnClickListener(v -> {
+            if (!PermissionUtil.getPermission(getActivity())){
+                return;
+            }
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 1);
@@ -123,17 +130,30 @@ public class MineFragment extends Fragment {
         if (resultCode == RESULT_OK) {
             switch (requsetCode) {
                 case 1:
-                    startSmallPhotoZoom(data.getData());
+                    uriTempFile=CropUtil.startSmallPhotoZoom(data.getData(),getActivity());
                     break;
                 case 2:
-                    setPicToView(data);
+                    //String path=GallaryUtil.getRealPathFromUri(this.getActivity(), data.getData());
+                    headImg.setImageURI(uriTempFile);
+                    upload();
                     break;
             }
         }
     }
 
-    public void startSmallPhotoZoom(Uri uri) {
+   /* public void startSmallPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
+
+        String path = Environment.getExternalStorageDirectory() + "/take_photo";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        uriTempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath()+"/take_photo" + "/" + System.currentTimeMillis() + ".jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriTempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true);
+
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1); // 裁剪框比例
@@ -143,17 +163,20 @@ public class MineFragment extends Fragment {
         intent.putExtra("scale", true);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 2);
-    }
+    }*/
 
-    private void setPicToView(Intent data) {
-        Bundle extras = data.getExtras();
-        bitmap = extras.getParcelable("data");
-        upload();
-        headImg.setImageBitmap(bitmap);
-    }
+/*    private void setPicToView() {
+        *//*Bundle extras = data.getExtras();
+        bitmap = extras.getParcelable("data");*//*
+
+        //headImg.setImageBitmap(bitmap);
+    }*/
 
     private void upload() {
-        File file = ImgUtil.compressImage(bitmap);
+        String path=GallaryUtil.getRealPathFromUri(this.getActivity(), uriTempFile);
+        File file=new File(path);
+        //File file = ImgUtil.compressImage(bitmap);
+
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("headImg", "head.png", RequestBody.create(MediaType.parse("image/jpg"), file))
@@ -162,6 +185,8 @@ public class MineFragment extends Fragment {
         HttpUtil.sendPost("/account/uploadHeadImg", requestBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                if (getActivity()==null)return;
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity().getApplicationContext(), "头像上传失败", Toast.LENGTH_SHORT).show();
                 });
@@ -169,6 +194,7 @@ public class MineFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity()==null)return;
                 CodeResult codeResult = JsonUtil.gson.fromJson(response.body().string(), CodeResult.class);
                 Log.d(TAG, "onResponse: " + codeResult.getMsg());
                 if (codeResult.getRstCode() == 200) {
